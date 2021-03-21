@@ -127,10 +127,12 @@ class PyFolio(bt.Analyzer):
         #
         # Positions
         pss = self.rets['positions']
-        ps = [[k] + v[-2:] for k, v in iteritems(pss)]
+        # ps = [[k] + v[-2:] for k, v in iteritems(pss)]
+        ps = [[k] + v for k, v in iteritems(pss)]
         cols = ps.pop(0)  # headers are in the first entry
-        positions = DF.from_records(ps, index=cols[0], columns=cols)
-        positions.index = pandas.to_datetime(positions.index)
+        positions = DF.from_records(ps[1:], columns=cols)
+        positions.index = pandas.to_datetime(positions['Datetime'])
+        del positions['Datetime']
         positions.index = positions.index.tz_localize('UTC')
 
         #
